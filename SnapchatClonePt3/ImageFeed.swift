@@ -46,7 +46,9 @@ func clearThreads() {
     - (string) thread: corresponds to which feed the image is to be posted to.
     - (string) username: corresponds to the display name of the current user who posted the image.
     - (string) date: the exact time at which the image is captured as a string
-        Note: Firebase doesn't allow us to store Date objects, so we have to represent the date as a string instead. You can do this by creating a DateFormatter object, setting its dateFormat (check Constants.swift for the correct date format!) and then calling dateFormatter.string(from: Date()). 
+                        - let dateFormat = "yyyy-MM-dd HH:mm:ss.A"
+
+        Note: Firebase doesn't allow us to store Date objects, so we have to represent the date as a string instead. You can do this by creating a DateFormatter object, setting its dateFormat (check Constants.swift for the correct date format!) and then calling dateFormatter.string(from: Date()).
  
     Create a dictionary with these four properties and store it as a new child under the Posts node (you'll need to create a child using an auto ID)
  
@@ -63,18 +65,14 @@ func addPost(postImage: UIImage, thread: String, username: String) {
     // YOUR CODE HERE
 }
 
-/*
-    TODO:
- 
-    Store the data to the given path on the storage module using the put function.
-    You can pass in nil for the metadata. 
-    In the closure, just check to see if there is an error and print it. You do not need to do anything with the returned metadata.
- 
-*/
+/* Done - stores data. */
 func store(data: Data, toPath path: String) {
     let storageRef = FIRStorage.storage().reference()
-    
-    // YOUR CODE HERE
+    storageRef.child(path).put(data, metadata: nil, completion: { (metadata, error) in
+        if let error = error {
+            print(error)
+        }
+    } )
 }
 
 
