@@ -30,7 +30,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     /*
-        TODO:
+        TODO: DONE
         
         Implement login functionality using the Firebase Auth function for signing in.
         You should check the result of the function call to see if it completes without error.
@@ -41,8 +41,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func didAttemptLogin(_ sender: UIButton) {
         guard let emailText = emailField.text else { return }
         guard let passwordText = passwordField.text else { return }
-        
-        // YOUR CODE HERE
+        // My login code below
+        FIRAuth.auth()?.signIn(withEmail: emailText, password: passwordText, completion: { (user, error) in
+            if let error = error {
+                // If fails, display an alert message to try login again.
+                let alert = UIAlertController(title: "Sign-in Failed", message: "Sign-in failed, please try again.", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            } else {
+                FIRAuth.auth()?.currentUser = user // idk if this is needed
+                self.performSegue(withIdentifier: "loginToMain", sender: self)
+            }
+        })
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
