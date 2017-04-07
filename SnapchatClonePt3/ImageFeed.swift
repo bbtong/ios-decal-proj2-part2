@@ -61,8 +61,16 @@ func addPost(postImage: UIImage, thread: String, username: String) {
     let dbRef = FIRDatabase.database().reference()
     let data = UIImageJPEGRepresentation(postImage, 1.0)! 
     let path = "\(firStorageImagesPath)/\(UUID().uuidString)"
+    // Mine below
+    let dateFormatter = DateFormatter().dateFormat = dateFormat
+    let date = dateFormatter.string(from: Date())
     
-    // YOUR CODE HERE
+    let dictionary: [String:AnyObject] = [firImagePathNode: path as AnyObject,
+                                          firThreadNode: thread as AnyObject,
+                                          firUsernameNode: username as AnyObject,
+                                          firDateNode: date as AnyObject]
+    dbRef.child(firPostsNode).childByAutoId().setValue(dictionary)
+    store(data: <#T##Data#>, toPath: path)
 }
 
 /* Done - stores data. */
