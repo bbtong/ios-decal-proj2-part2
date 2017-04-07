@@ -45,13 +45,10 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         postImageViewButton.addTarget(self, action: #selector(self.hidePostImage(sender:)), for: UIControlEvents.touchUpInside)
         
     }
-    /*
-        TODO:
-        Call the function to retrieve data for our tableview. 
-        (Hint): This should be pretty simple.
-    */
+    
+    /* Updates data when appears. */
     override func viewWillAppear(_ animated: Bool) {
-        // YOUR CODE HERE
+        updateData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,7 +56,7 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     /*
-        TODO:
+        TODO: DONE
         Use the 'getPosts' function to retrieve all of the posts in the database. You'll need to pass in the currentUser property declared above so that we know if the posts have been read or not.
         Using the posts variable that is returned, do the following:
         - First clear the current dictionary of posts (in case we're reloading this feed again). You can do this by calling the 'clearThreads' function.
@@ -71,7 +68,22 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
      
     */
     func updateData() {
-        // YOUR CODE HERE
+        getPosts(user: self.currentUser, completion: { (posts) in
+            clearThreads()
+            for post in posts {
+                addPostToThread(post: post)
+                getDataFromPath(path: post.postImagePath, completion: { (imageData) in
+                    
+                    if let imageData = imageData {
+                        self.loadedImagesById[post.postId] = UIImage(data: imageData)
+                    }
+                    
+                } )
+                
+            }
+            self.postTableView.reloadData()
+            // or reload rows?
+        } )
     }
     
     // MARK: Custom methods (relating to UI)
@@ -138,14 +150,12 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    // TODO: add the selected post as one of the current user's read posts
+    // TODO: DONE
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let post = getPostFromIndexPath(indexPath: indexPath), !post.read {
             presentPostImage(forPost: post)
             post.read = true
-            
-            // YOUR CODE HERE
-            
+            currentUser.addNewReadPost(postID: post.postId)
             tableView.reloadRows(at: [indexPath], with: .automatic)
         }
      
