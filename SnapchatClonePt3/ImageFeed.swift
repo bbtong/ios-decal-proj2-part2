@@ -104,8 +104,51 @@ func store(data: Data, toPath path: String) {
 func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
     let dbRef = FIRDatabase.database().reference()
     var postArray: [Post] = []
-    
-    // YOUR CODE HERE
+    // Finally, the getPosts function will retrieve all of the posts from Firebase as well as the current user's read post ID's, and then create a Post array where each post's read property is defined by checking if the id is contained in the read posts. For this part, you'll need to nest closures together to make sure everything is performed in order. This function may end up being a bit large, but the specs in the comments should clearly describe what to do.
+    dbRef.child(firPostsNode).observeSingleEvent(of: .value, with: { (allShots) in // very confused
+        if allShots.exists() {
+            if let dictionary = allShots.value as? [String:AnyObject] {
+                user.getReadPostIDs(completion:  { (userShots) in
+                    var usernameK: String
+                    var imagepathK: String
+                    var threadK: String
+                    var dateStringK: String
+                    var readPropertyK: Bool
+                    var postingKey: Post
+
+                    for key in dictionary.keys {
+                        usernameK = key?[firUsernameNode] as! String
+                        imagepathK = key?[firImagePathNode] as! String
+                        threadK = key?[firThreadNode] as! String
+                        dateStringK = key?[firDateNode] as! String
+                        if (userShots.contains(key)) {
+                            return readPropertyK = true
+                        } else {
+                            return readPropertyK = false
+                        }
+                            
+                        postingKey = Post(id: key,
+                                          username: usernameK,
+                                          postImagePath: imagepathK,
+                                          thread: threadK,
+                                          dateString: dateStringK,
+                                          read: readPropertyK)
+                        postArray.append(postingKey)
+                    }
+                    completion(postArray)
+                } )
+                
+                
+            } else {
+                completion(nil)
+            }
+        } else {
+            completion(nil)
+        }
+        
+        
+    } )
+
 }
 
 func getDataFromPath(path: String, completion: @escaping (Data?) -> Void) {
