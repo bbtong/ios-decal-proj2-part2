@@ -70,7 +70,7 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
     func updateData() {
         getPosts(user: self.currentUser, completion: { (posts) in
             clearThreads()
-            for post in posts {
+            for post in posts! {
                 addPostToThread(post: post)
                 getDataFromPath(path: post.postImagePath, completion: { (imageData) in
                     

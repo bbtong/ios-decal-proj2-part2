@@ -38,7 +38,7 @@ class CurrentUser {
             if snapshot != nil {
                 if let dictionary = snapshot.value as? [String:AnyObject] {
                     for key in dictionary.keys {
-                        postArray.append(key as! String)
+                        postArray.append(key)
                     }
                     self.readPostIDs = postArray
                 }

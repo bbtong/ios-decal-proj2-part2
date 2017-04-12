@@ -49,7 +49,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             } else {
-                FIRAuth.auth()?.currentUser = user // idk if this is needed
                 self.performSegue(withIdentifier: "loginToMain", sender: self)
             }
         })

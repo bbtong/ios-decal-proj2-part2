@@ -38,7 +38,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
         guard let email = emailField.text else { return }
         guard let password = passwordField.text else { return }
         guard let name = nameField.text else { return }
-        if (password.characters.count = nil) || (password.characters.count < 6) {
+        if (password.characters.count < 6) {
             let passAlert = UIAlertController(title: "Password Too Short", message: "Your password must be 6 characters or more.", preferredStyle: UIAlertControllerStyle.alert)
             passAlert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
             self.present(passAlert, animated: true, completion: nil)
@@ -51,10 +51,15 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             } else {
-                user!.profileChangeRequest()
+                let changeRequest = user!.profileChangeRequest()
                 changeRequest.displayName = name
-                changeRequest.commitChanges(completion: { (err) })
-                self.performSegue(withIdentifier: "loginToMain", sender: self)
+                changeRequest.commitChanges(completion: { (err) in
+                    if let err = err {
+                        print(err)
+                    } else {
+                        self.performSegue(withIdentifier: "signupToMain", sender: self)
+                    }
+                })
             }
         } )
     }
